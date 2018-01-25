@@ -11,13 +11,14 @@ if [ ! -d "$VENV_DIR" ]; then
   $path/bin/conda create -y --prefix=$VENV_DIR python=$ver
   $path/bin/conda config --add envs_dirs $VENV_DIR
   echo "done creating conda env"
+  VENV_NAME=$VENV_DIR
 fi
 activate_venv
 }
 
 function setup_virtualenv() {
 local ver=$1
-[ ! -d "$VENV_NAME" ] && virtualenv $VENV_NAME --python=python$ver
+[ ! -d "$VENV_DIR" ] && virtualenv $VENV_DIR --python=python$ver
 activate_venv
 }
 
@@ -26,9 +27,9 @@ if [ -n "$VENV_INSTALL" ]; then
   VENV_NAME=${VENV_NAME:-env}
   cd ${WORKDIR_ROOT:-/deploy/app}
   if [ -n "$ENV_CONDA_DIR" ]; then
-    setup_conda $VENV_INSTALL $ENV_CONDA_DIR
+    setup_conda $VENV_INSTALL $ENV_CONDA_DIR || exit 1
   else
-    setup_virtualenv $VENV_INSTALL
+    setup_virtualenv $VENV_INSTALL || exit 2
   fi
   echo "using pip at $(which pip)"
   pip install $USER_ARG --upgrade -r /deploy/app/requirements.txt
@@ -38,6 +39,6 @@ else
     sudo ln -sf $(which gunicorn) /usr/bin/gunicorn
     sudo /usr/bin/supervisord
   else
-    echo "ERROR: can't find gunicorn!"
+    echo "ERROR: can't find gunicorn!" && exit 3
   fi
 fi

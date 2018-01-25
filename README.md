@@ -6,24 +6,40 @@ Nginx + Gunicorn + Flask.
 
 ### Base Docker Image
 
-* [ubuntu:12.04](https://registry.hub.docker.com/_/ubuntu/)
+* [wangmuy:ubuntu-runas](https://hub.docker.com/r/wangmuy/ubuntu-runas/) Ubuntu_16.04
 
 
 ### Installation
 
 1. Install [Docker](https://www.docker.com/).
 
-2. Download [automated build](https://registry.hub.docker.com/u/danriti/nginx-gunicorn-flask/) from public [Docker Hub Registry](https://registry.hub.docker.com/):
+2. Pull image
 
 ```bash
-docker pull danriti/nginx-gunicorn-flask
+docker pull wangmuy/flask-nginx-gunicorn
 ```
 
 
-### Usage
+### Install virtual environments and run
+
+* Using Virtualenv
 
 ```bash
-docker run -d -p 80:80 danriti/nginx-gunicorn-flask
+# Install env
+docker run --rm -v $(pwd)/app:/deploy/app -e VENV_INSTALL=3.5 -e VENV_DIR=/deploy/app/env -e USER_ID=1000 -e GROUP_ID=1000 wangmuy/flask-nginx-gunicorn
+
+# Run
+docker run -d -p 80:80 -v $(pwd)/app:/deploy/app -e VENV_DIR=/deploy/app/env -e USER_ID=1000 -e GROUP_ID=1000 wangmuy/flask-nginx-gunicorn
+```
+
+* Using Conda
+
+```bash
+# Install env
+docker run --rm -v my_anaconda3:/opt/anaconda3 -v $(pwd)/app:/deploy/app -e VENV_INSTALL=3.5 -e VENV_DIR=/deploy/app/env_conda -e ENV_CONDA_DIR=/opt/anaconda3 -e USER_ID=1000 -e GROUP_ID=1000 wangmuy/flask-nginx-gunicorn
+
+# Run
+docker run -d -p 80:80 -v $(pwd)/my_anaconda3:/opt/anaconda3 -v $(pwd)/app:/deploy/app -e VENV_DIR=/deploy/app/env_conda -e VENV_NAME=/deploy/app/env_conda -e USER_ID=1000 -e GROUP_ID=1000 wangmuy/flask-nginx-gunicorn
 ```
 
 After few seconds, open `http://<host>` to see the Flask app.

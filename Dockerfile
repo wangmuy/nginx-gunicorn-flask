@@ -1,17 +1,16 @@
 # nginx-gunicorn-flask
 
-FROM ubuntu:12.04
-MAINTAINER Daniel Riti <dmriti@gmail.com>
+FROM wangmuy/ubuntu-runas
+MAINTAINER Zhongdi Wang <wangmuy@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
-RUN apt-get install -y python python-pip python-virtualenv nginx gunicorn supervisor
+RUN apt-get install -y python python-pip python-virtualenv nginx supervisor
 
-# Setup flask application
-RUN mkdir -p /deploy/app
-COPY app /deploy/app
-RUN pip install -r /deploy/app/requirements.txt
+VOLUME /deploy/app
+COPY pip.conf /root/.pip/
+COPY condarc /root/.condarc
 
 # Setup nginx
 RUN rm /etc/nginx/sites-enabled/default
@@ -24,5 +23,5 @@ RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
 
-# Start processes
-CMD ["/usr/bin/supervisord"]
+COPY start_private.sh /scripts/start_private.sh
+COPY start-user_private.sh /scripts/start-user_private.sh

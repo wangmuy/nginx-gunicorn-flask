@@ -32,7 +32,8 @@ if [ -n "$VENV_INSTALL" ]; then
     setup_virtualenv $VENV_INSTALL || exit 2
   fi
   echo "using pip at $(which pip)"
-  pip install $USER_ARG --upgrade -r /deploy/app/requirements.txt
+  RQMT_FILE=${RQMT_FILE:-/deploy/app/requirements.txt}
+  pip install $USER_ARG --upgrade -r $RQMT_FILE
 else
   if [ -n "$(which gunicorn)" ]; then
     echo "using gunicorn at $(which gunicorn)"

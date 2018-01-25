@@ -43,3 +43,10 @@ docker run -d -p 80:80 -v $(pwd)/my_anaconda3:/opt/anaconda3 -v $(pwd)/app:/depl
 ```
 
 After few seconds, open `http://<host>` to see the Flask app.
+
+
+#### Reference
+
+[A Performance Analysis of Python WSGI Servers: Part 2](https://blog.appdynamics.com/engineering/a-performance-analysis-of-python-wsgi-servers-part-2/) Gunicorn: A good, consistent performer for medium loads
+[Flask application in a production-ready container](https://netdevops.me/2017/flask-application-in-a-production-ready-container/)
+[brianmcdonnel.github.io](http://brianmcdonnell.github.io/pycon_ie_2013/#/35)

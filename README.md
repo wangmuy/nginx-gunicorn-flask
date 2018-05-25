@@ -9,18 +9,31 @@ Nginx + Gunicorn + Flask.
 * [wangmuy:ubuntu-runas](https://hub.docker.com/r/wangmuy/ubuntu-runas/) Ubuntu_16.04
 
 
-### Installation
+### Basic usage workflow
 
-1. Install [Docker](https://www.docker.com/).
+There's 2 usage workflow for this docker image:
+#### For development phase
+* map venv volume and code volume
+* install venv(virtualenv/conda) into venv volume
+* open port at 8080
 
-2. Pull image
+#### For production phase
+* build app image(copy code, install venv into image)
+* open port at 8888
+
+### Dev phase
+
+#### docker-compose
 
 ```bash
-docker pull wangmuy/flask-nginx-gunicorn
-```
+# Install env
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose run --rm app_env
+# Run
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose up app
+ ```
 
-
-### Install virtual environments and run
+#### docker run
+##### Install virtual environments and run
 
 * Using Virtualenv
 
@@ -52,8 +65,18 @@ After few seconds, open `http://<host>` to see the Flask app.
 docker run --rm -it -p 80:80 -v $(pwd)/gunicorn.unix.conf:/etc/supervisor/conf.d/gunicorn.conf -v $(pwd)/flask.unix.conf:/etc/nginx/sites-enabled/flask.conf  -v $(pwd)/app:/deploy/app -e VENV_DIR=/deploy/app/env -e USER_ID=1000 -e GROUP_ID=1000 wangmuy/flask-nginx-gunicorn
 ```
 
+### Production phase
 
-#### Reference
+#### docker-compose
+
+```bash
+# Build app image
+PORT=8888 USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose -f docker-compose.yml -f docker-compose.prod.yml build app
+# run
+PORT=8888 USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose -f docker-compose.yml -f docker-compose.prod.yml up app
+```
+
+### Reference
 
 * [Deploying Gunicorn](http://docs.gunicorn.org/en/stable/deploy.html)
 * [A Performance Analysis of Python WSGI Servers: Part 2](https://blog.appdynamics.com/engineering/a-performance-analysis-of-python-wsgi-servers-part-2/) Gunicorn: A good, consistent performer for medium loads

@@ -1,0 +1,31 @@
+version: "3.2"
+
+services:
+  app_env:
+    image: wangmuy/flask-nginx-gunicorn
+    volumes:
+      - ./app:/deploy
+    environment:
+      USER_ID: ${USER_ID}
+      GROUP_ID: ${GROUP_ID}
+      WORKDIR_ROOT: /deploy
+      RQMT_FILE: /deploy/requirements.deploy.txt
+      VENV_DIR: /deploy/venv
+      VENV_INSTALL: 3.5
+
+  app:
+    image: wangmuy/flask-nginx-gunicorn
+    ports:
+      - 8080:80
+    volumes:
+      - ./app:/deploy
+      - ./app/gunicorn.conf:/etc/supervisor/conf.d/gunicorn.conf
+    environment:
+      USER_ID: ${USER_ID}
+      GROUP_ID: ${GROUP_ID}
+      WORKDIR_ROOT: /deploy
+      VENV_DIR: /deploy/venv
+
+  db:
+    ports:
+      - 3306:3306

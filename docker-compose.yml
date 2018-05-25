@@ -1,0 +1,23 @@
+version: "3.2"
+
+services:
+  app:
+    environment:
+      USER_ID: ${USER_ID}
+      GROUP_ID: ${GROUP_ID}
+      WORKDIR_ROOT: /deploy
+      VENV_DIR: /deploy/env
+    container_name: app_backend
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./app/dbmodel/schema.sql:/docker-entrypoint-initdb.d/dump.sql
+    container_name: app_db
+    restart: on-failure:10

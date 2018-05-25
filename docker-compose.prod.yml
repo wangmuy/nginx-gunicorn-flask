@@ -1,0 +1,17 @@
+version: "3.2"
+
+services:
+  app:
+    build: ./app
+    image: wangmuy/app:${APP_VERSION:-latest}
+    ports:
+      - ${PORT}:80
+    depends_on:
+      - db
+    links:
+      - db
+    restart: on-failure:10
+
+  db:
+    ports:
+      - 8806:3306

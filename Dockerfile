@@ -21,7 +21,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # Setup supervisord
 RUN mkdir -p /var/log/supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
+COPY app/gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
 
 COPY start_private.sh /scripts/start_private.sh
 COPY start-user_private.sh /scripts/start-user_private.sh

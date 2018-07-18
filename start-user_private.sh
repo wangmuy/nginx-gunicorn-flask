@@ -1,9 +1,7 @@
 #!/bin/bash
 set -x
 function activate_venv() {
-ls $VENV_DIR/bin
 if [ -n "$ENV_CONDA_DIR" ]; then
-  ls $ENV_CONDA_DIR/bin
   source $ENV_CONDA_DIR/bin/activate $VENV_NAME
 else
   [ -f "$VENV_DIR/bin/activate" ] && echo "activating $VENV_NAME at $VENV_DIR..." && source $VENV_DIR/bin/activate $VENV_NAME
@@ -29,7 +27,6 @@ local ver=$1
 activate_venv
 }
 
-activate_venv
 if [ -n "$VENV_INSTALL" ]; then
   VENV_NAME=${VENV_NAME:-env}
   cd ${WORKDIR_ROOT:-/deploy/app}
@@ -42,6 +39,7 @@ if [ -n "$VENV_INSTALL" ]; then
   RQMT_FILE=${RQMT_FILE:-/deploy/app/requirements.txt}
   pip install $USER_ARG --upgrade -r $RQMT_FILE
 else
+  activate_venv
   if [ -n "$(which gunicorn)" ]; then
     echo "using gunicorn at $(which gunicorn)"
     sudo ln -sf $(which gunicorn) /usr/bin/gunicorn

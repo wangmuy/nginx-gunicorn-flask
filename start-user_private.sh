@@ -1,6 +1,13 @@
 #!/bin/bash
+set -x
 function activate_venv() {
-[ -f "$VENV_DIR/bin/activate" ] && echo "activating $VENV_NAME at $VENV_DIR..." && source $VENV_DIR/bin/activate $VENV_NAME
+ls $VENV_DIR/bin
+if [ -n "$ENV_CONDA_DIR" ]; then
+  ls $ENV_CONDA_DIR/bin
+  source $ENV_CONDA_DIR/bin/activate $VENV_NAME
+else
+  [ -f "$VENV_DIR/bin/activate" ] && echo "activating $VENV_NAME at $VENV_DIR..." && source $VENV_DIR/bin/activate $VENV_NAME
+fi
 }
 
 function setup_conda() {
@@ -43,3 +50,4 @@ else
     echo "ERROR: can't find gunicorn!" && exit 3
   fi
 fi
+

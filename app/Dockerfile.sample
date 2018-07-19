@@ -1,0 +1,18 @@
+FROM wangmuy/flask-nginx-gunicorn
+MAINTAINER wangmuy <wangmuy@gmail.com>
+
+# use miniconda
+RUN apt-get update && apt-get install -y curl && apt-get clean
+RUN curl -LO https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN bash Miniconda3-latest-Linux-x86_64.sh -p /miniconda -b
+RUN rm Miniconda3-latest-Linux-x86_64.sh
+ENV ENV_CONDA_DIR=/miniconda
+
+RUN mkdir -p /deploy
+WORKDIR /deploy
+COPY . /deploy
+COPY ./gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
+
+# prepare env
+RUN VENV_INSTALL=3.5.4 VENV_DIR=/deploy/env RQMT_FILE=/deploy/requirements.prod.txt source /scripts/start-user_private.sh
+

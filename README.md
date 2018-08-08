@@ -69,6 +69,17 @@ docker run --rm -it -p 80:80 -v $(pwd)/gunicorn.unix.conf:/etc/supervisor/conf.d
 
 #### docker-compose
 
+##### dev
+
+```bash
+# Setup conda env
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose run --rm -v /opt/anaconda3:/opt/anaconda3 -v $(pwd):/deploy app_env
+# run
+USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose up app
+```
+
+##### prod
+
 ```bash
 # Build app image
 PORT=8888 USER_ID=$(id -u) GROUP_ID=$(id -g) docker-compose -f docker-compose.yml -f docker-compose.prod.yml build app
